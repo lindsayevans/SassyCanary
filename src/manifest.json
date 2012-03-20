@@ -1,0 +1,8 @@
+{
+	"name": "SassyCanary",
+	"version": "0.0.1",
+	"minimum_chrome_version": "14.0",
+	"devtools_page": "devtools.html",
+	"permissions": [ "experimental"]
+}
+

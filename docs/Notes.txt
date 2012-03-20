@@ -1,0 +1,31 @@
+document.styleSheets[i].cssRules[ii].style
+
+
+
+
+devtools.js:
+WebInspector.CSSRule
+WebInspector.StylesSidebarPane
+. _executeRebuildUpdate
+. _rebuildUpdate
+. _rebuildStyleRules
+
+WebInspector.StylePropertyTreeElement.prototype
+
+WebInspector.StylePropertiesSection
+specifically the "if (media.sourceURL)" & "WebInspector.linkifyResourceAsNode" bits
+
+
+
+overriding WebInspector.linkifyURLAsNode:
+
+WebInspector.linkifyURLAsNode_OLD = WebInspector.linkifyURLAsNode;
+WebInspector.linkifyURLAsNode = function(url, linkText, classes, isExternal, tooltipText)
+{
+
+  var a = WebInspector.linkifyURLAsNode_OLD(url, linkText, classes, isExternal, tooltipText);
+
+  console.log(arguments)
+
+    return a;
+}
