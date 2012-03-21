@@ -12,45 +12,51 @@
 
 		// Make a shallow copy with a null prototype, so that sidebar does not
 		// expose prototype.
-		var rules = document.styleSheets[0].cssRules;
+		var stylesheets = document.styleSheets;
+		var rules;
 		var copy = { __proto__: null };
 
 		var styleRule, mediaRule, path, filename;
 
-		for (var i = 0; i < rules.length-1; ++i){
+		for (var i = 0; i < stylesheets.length-1; ++i){
 
-				var styleRule = rules[i+1];
-				if (styleRule.type != CSSRule.STYLE_RULE) continue;
-				styleRule.sassDebugInfo = {};
+			rules = stylesheets[i].cssRules;
 
-				var mediaRule = rules[i];
-				if (mediaRule.type != CSSRule.MEDIA_RULE) continue;
+			for (var ii = 0; ii < rules.length-1; ++ii){
 
-				if (mediaRule.media.mediaText != "-sass-debug-info") continue;
+					var styleRule = rules[ii+1];
+					if (styleRule.type != CSSRule.STYLE_RULE) continue;
+					styleRule.sassDebugInfo = {};
 
-				for (var j=0; j<mediaRule.cssRules.length; j++){
-						styleRule.sassDebugInfo[mediaRule.cssRules[j].selectorText] =
-								mediaRule.cssRules[j].style.getPropertyValue("font-family");
-				}
+					var mediaRule = rules[ii];
+					if (mediaRule.type != CSSRule.MEDIA_RULE) continue;
 
-				try {
-					if($el.is(styleRule.selectorText) || $el.parents(styleRule.selectorText).length){
-							path = styleRule.sassDebugInfo['filename'].split('/');
-							filename = path[path.length - 1].replace(/'/g, '');
-	/*
-						copy[styleRule.selectorText] = {
-							__proto__: null,
-							"filename": styleRule.sassDebugInfo['filename'],
-							"line": styleRule.sassDebugInfo['line'],
-							"matched": $el.is(styleRule.selectorText),
-							"parent_matched": !!$el.parents(styleRule.selectorText).length
-						};
-	*/
-						copy[styleRule.selectorText] = filename+':'+styleRule.sassDebugInfo['line'].replace(/'/g, '');
+					if (mediaRule.media.mediaText != "-sass-debug-info") continue;
+
+					for (var j=0; j<mediaRule.cssRules.length; j++){
+							styleRule.sassDebugInfo[mediaRule.cssRules[j].selectorText] =
+									mediaRule.cssRules[j].style.getPropertyValue("font-family");
 					}
-				}catch(e){
-console.error(e.message)
-				}
+
+					try {
+						if($el.is(styleRule.selectorText) || $el.parents(styleRule.selectorText).length){
+								path = styleRule.sassDebugInfo['filename'].split('/');
+								filename = path[path.length - 1].replace(/'/g, '');
+		/*
+							copy[styleRule.selectorText] = {
+								__proto__: null,
+								"filename": styleRule.sassDebugInfo['filename'],
+								"line": styleRule.sassDebugInfo['line'],
+								"matched": $el.is(styleRule.selectorText),
+								"parent_matched": !!$el.parents(styleRule.selectorText).length
+							};
+		*/
+							copy[styleRule.selectorText] = filename+':'+styleRule.sassDebugInfo['line'].replace(/'/g, '');
+						}
+					}catch(e){
+						console.error(e.message);
+					}
+			}
 		}
 
 		return copy;
